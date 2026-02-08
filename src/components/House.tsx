@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -6,139 +6,195 @@ interface HouseProps {
   onRoomClick: (room: string) => void;
 }
 
-// Stylized Croatian palace/manor inspired building
 export function House({ onRoomClick }: HouseProps) {
   const groupRef = useRef<THREE.Group>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
 
-  // Subtle floating animation
+  // Gentle floating animation
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.05;
+      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.4) * 0.08;
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.02;
     }
   });
 
+  // Color based on hover state
+  const getColor = (id: string, base: string, hover: string) => 
+    hovered === id ? hover : base;
+
   return (
-    <group ref={groupRef} position={[0, 0, 0]}>
-      {/* Main Building - Central Hall */}
+    <group ref={groupRef}>
+      {/* ═══════════════════════════════════════════════════════════
+          MAIN BUILDING - Central Hall
+          ═══════════════════════════════════════════════════════════ */}
       <mesh
         position={[0, 3, 0]}
         castShadow
         receiveShadow
         onClick={() => onRoomClick('main-hall')}
+        onPointerOver={() => setHovered('main-hall')}
+        onPointerOut={() => setHovered(null)}
       >
         <boxGeometry args={[8, 6, 10]} />
-        <meshStandardMaterial color="#d4cfc5" roughness={0.8} metalness={0.1} />
+        <meshStandardMaterial 
+          color={getColor('main-hall', '#d4cfc5', '#e8e0d0')} 
+          roughness={0.75} 
+        />
       </mesh>
 
-      {/* Roof - Main Building (pyramid shape) */}
+      {/* Main Roof */}
       <mesh position={[0, 7.5, 0]} rotation={[0, Math.PI / 4, 0]} castShadow>
         <coneGeometry args={[7, 3, 4]} />
-        <meshStandardMaterial color="#8B4513" roughness={0.9} />
+        <meshStandardMaterial color="#8B4513" roughness={0.85} />
       </mesh>
 
-      {/* Left Tower */}
+      {/* ═══════════════════════════════════════════════════════════
+          LEFT TOWER - Library
+          ═══════════════════════════════════════════════════════════ */}
       <group position={[-6, 0, -3]}>
-        <mesh position={[0, 5, 0]} castShadow receiveShadow onClick={() => onRoomClick('library')}>
+        <mesh 
+          position={[0, 5, 0]} 
+          castShadow 
+          receiveShadow
+          onClick={() => onRoomClick('library')}
+          onPointerOver={() => setHovered('library')}
+          onPointerOut={() => setHovered(null)}
+        >
           <cylinderGeometry args={[2.5, 2.5, 10, 16]} />
-          <meshStandardMaterial color="#d4cfc5" roughness={0.8} />
+          <meshStandardMaterial 
+            color={getColor('library', '#d4cfc5', '#e8e0d0')} 
+            roughness={0.75} 
+          />
         </mesh>
+        
         {/* Tower Roof */}
         <mesh position={[0, 11.5, 0]} castShadow>
           <coneGeometry args={[3, 3, 16]} />
-          <meshStandardMaterial color="#8B4513" roughness={0.9} />
+          <meshStandardMaterial color="#8B4513" roughness={0.85} />
         </mesh>
-        {/* Flag Pole */}
+        
+        {/* Flag Pole + Flag */}
         <mesh position={[0, 14, 0]}>
-          <cylinderGeometry args={[0.08, 0.08, 2.5]} />
-          <meshStandardMaterial color="#333" metalness={0.8} />
+          <cylinderGeometry args={[0.06, 0.06, 2.5]} />
+          <meshStandardMaterial color="#333" metalness={0.7} />
         </mesh>
-        {/* Croatian Flag */}
-        <mesh position={[0.7, 14, 0]}>
-          <boxGeometry args={[1.2, 0.8, 0.02]} />
+        <mesh position={[0.6, 14.2, 0]}>
+          <boxGeometry args={[1, 0.7, 0.02]} />
           <meshStandardMaterial color="#FF0000" />
         </mesh>
       </group>
 
-      {/* Right Tower */}
+      {/* ═══════════════════════════════════════════════════════════
+          RIGHT TOWER - War Room
+          ═══════════════════════════════════════════════════════════ */}
       <group position={[6, 0, -3]}>
-        <mesh position={[0, 5, 0]} castShadow receiveShadow onClick={() => onRoomClick('war-room')}>
+        <mesh 
+          position={[0, 5, 0]} 
+          castShadow 
+          receiveShadow
+          onClick={() => onRoomClick('war-room')}
+          onPointerOver={() => setHovered('war-room')}
+          onPointerOut={() => setHovered(null)}
+        >
           <cylinderGeometry args={[2.5, 2.5, 10, 16]} />
-          <meshStandardMaterial color="#d4cfc5" roughness={0.8} />
+          <meshStandardMaterial 
+            color={getColor('war-room', '#d4cfc5', '#e8e0d0')} 
+            roughness={0.75} 
+          />
         </mesh>
+        
         <mesh position={[0, 11.5, 0]} castShadow>
           <coneGeometry args={[3, 3, 16]} />
-          <meshStandardMaterial color="#8B4513" roughness={0.9} />
+          <meshStandardMaterial color="#8B4513" roughness={0.85} />
         </mesh>
       </group>
 
-      {/* Front Extension - Entry Hall */}
+      {/* ═══════════════════════════════════════════════════════════
+          FRONT EXTENSION - Entry Hall
+          ═══════════════════════════════════════════════════════════ */}
       <mesh
         position={[0, 2, 6]}
         castShadow
         receiveShadow
         onClick={() => onRoomClick('entry')}
+        onPointerOver={() => setHovered('entry')}
+        onPointerOut={() => setHovered(null)}
       >
         <boxGeometry args={[6, 4, 4]} />
-        <meshStandardMaterial color="#d4cfc5" roughness={0.8} />
+        <meshStandardMaterial 
+          color={getColor('entry', '#d4cfc5', '#e8e0d0')} 
+          roughness={0.75} 
+        />
       </mesh>
 
       {/* Entry Columns */}
       {[-1.5, 1.5].map((x) => (
         <mesh key={x} position={[x, 2, 8.2]} castShadow>
-          <cylinderGeometry args={[0.3, 0.4, 4]} />
-          <meshStandardMaterial color="#c0b8a8" roughness={0.6} metalness={0.2} />
+          <cylinderGeometry args={[0.3, 0.35, 4, 12]} />
+          <meshStandardMaterial color="#c0b8a8" roughness={0.6} />
         </mesh>
       ))}
 
-      {/* Windows - Main Building (glowing) */}
-      {[[-2, 3, 5.05], [2, 3, 5.05], [-2, 5, 5.05], [2, 5, 5.05]].map((pos, i) => (
-        <mesh key={i} position={pos as [number, number, number]}>
-          <boxGeometry args={[1.2, 1.8, 0.1]} />
+      {/* ═══════════════════════════════════════════════════════════
+          DECORATIVE ELEMENTS
+          ═══════════════════════════════════════════════════════════ */}
+      
+      {/* Windows (glowing) */}
+      {[
+        [-2, 3, 5.02], [2, 3, 5.02], 
+        [-2, 5, 5.02], [2, 5, 5.02]
+      ].map((pos, i) => (
+        <mesh key={`window-${i}`} position={pos as [number, number, number]}>
+          <boxGeometry args={[1.1, 1.7, 0.08]} />
           <meshStandardMaterial
             color="#1a1a2e"
             emissive="#D4A84B"
-            emissiveIntensity={0.5}
+            emissiveIntensity={0.6}
           />
         </mesh>
       ))}
 
       {/* Door */}
-      <mesh position={[0, 1.5, 8.05]}>
-        <boxGeometry args={[1.5, 3, 0.1]} />
-        <meshStandardMaterial color="#4a3c2a" roughness={0.7} />
+      <mesh position={[0, 1.5, 8.02]}>
+        <boxGeometry args={[1.4, 2.8, 0.08]} />
+        <meshStandardMaterial color="#3d2d1f" roughness={0.8} />
       </mesh>
 
-      {/* Gold trim above door */}
-      <mesh position={[0, 6.05, 5]}>
-        <boxGeometry args={[10, 0.2, 0.3]} />
-        <meshStandardMaterial color="#D4A84B" metalness={0.9} roughness={0.1} />
+      {/* Gold Trim */}
+      <mesh position={[0, 6.02, 5]}>
+        <boxGeometry args={[10, 0.15, 0.25]} />
+        <meshStandardMaterial color="#D4A84B" metalness={0.85} roughness={0.15} />
       </mesh>
 
-      {/* Coat of Arms above door */}
-      <group position={[0, 4.5, 8.15]}>
+      {/* Coat of Arms */}
+      <group position={[0, 4.5, 8.1]}>
         <mesh>
-          <boxGeometry args={[1.2, 1.2, 0.2]} />
+          <boxGeometry args={[1.1, 1.1, 0.15]} />
           <meshStandardMaterial color="#D4A84B" metalness={0.8} roughness={0.2} />
         </mesh>
-        {/* Checkered pattern hint */}
-        <mesh position={[-0.25, 0.25, 0.12]}>
-          <boxGeometry args={[0.35, 0.35, 0.02]} />
+        {/* Croatian checkered pattern */}
+        <mesh position={[-0.22, 0.22, 0.09]}>
+          <boxGeometry args={[0.3, 0.3, 0.02]} />
           <meshStandardMaterial color="#FF0000" />
         </mesh>
-        <mesh position={[0.25, -0.25, 0.12]}>
-          <boxGeometry args={[0.35, 0.35, 0.02]} />
+        <mesh position={[0.22, -0.22, 0.09]}>
+          <boxGeometry args={[0.3, 0.3, 0.02]} />
           <meshStandardMaterial color="#FF0000" />
         </mesh>
       </group>
 
-      {/* Glowing orbs for magical effect */}
-      {[[-8, 9, 0], [8, 9, 0], [0, 13, 0]].map((pos, i) => (
+      {/* Glowing orbs */}
+      {[
+        [-7, 13, -3], 
+        [7, 13, -3], 
+        [0, 9.5, 0]
+      ].map((pos, i) => (
         <mesh key={`orb-${i}`} position={pos as [number, number, number]}>
-          <sphereGeometry args={[0.25, 16, 16]} />
+          <sphereGeometry args={[0.2, 12, 12]} />
           <meshStandardMaterial
             color="#B8A9C8"
             emissive="#B8A9C8"
-            emissiveIntensity={2}
+            emissiveIntensity={1.5}
           />
         </mesh>
       ))}
