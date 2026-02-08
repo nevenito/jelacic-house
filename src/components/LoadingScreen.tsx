@@ -13,12 +13,12 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(timer);
-          setTimeout(onComplete, 500);
+          setTimeout(onComplete, 300);
           return 100;
         }
-        return prev + Math.random() * 15;
+        return prev + Math.random() * 25; // Faster loading
       });
-    }, 200);
+    }, 150); // Faster interval
 
     return () => clearInterval(timer);
   }, [onComplete]);
