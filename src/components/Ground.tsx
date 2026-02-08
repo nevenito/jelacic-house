@@ -1,83 +1,57 @@
-import { Plane, Circle } from '@react-three/drei';
-import * as THREE from 'three';
-
 export function Ground() {
   return (
     <group>
-      {/* Main ground plane */}
-      <Plane
-        args={[100, 100]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.01, 0]}
-        receiveShadow
-      >
-        <meshStandardMaterial
-          color="#1a1a1f"
-          roughness={0.9}
-          metalness={0.1}
-        />
-      </Plane>
+      {/* Main ground */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
+        <planeGeometry args={[80, 80]} />
+        <meshStandardMaterial color="#15151a" roughness={0.95} />
+      </mesh>
 
-      {/* Cobblestone path to the house */}
-      <Plane
-        args={[4, 20]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, 0.01, 13]}
-        receiveShadow
-      >
-        <meshStandardMaterial color="#2a2520" roughness={1} />
-      </Plane>
+      {/* Cobblestone path */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 12]}>
+        <planeGeometry args={[3.5, 18]} />
+        <meshStandardMaterial color="#252018" roughness={1} />
+      </mesh>
 
       {/* Garden circles */}
-      {[[-8, 8], [8, 8]].map(([x, z], i) => (
-        <Circle
-          key={i}
-          args={[3, 32]}
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[x, 0.02, z]}
-        >
+      {[[-7, 8], [7, 8]].map(([x, z], i) => (
+        <mesh key={i} rotation={[-Math.PI / 2, 0, 0]} position={[x, 0.02, z]}>
+          <circleGeometry args={[2.5, 24]} />
           <meshStandardMaterial color="#1a2518" roughness={0.95} />
-        </Circle>
+        </mesh>
       ))}
 
-      {/* Decorative hedge outlines */}
+      {/* Hedge borders */}
       {[
-        [-12, 0, 0, 0.5, 1, 20],
-        [12, 0, 0, 0.5, 1, 20],
-        [0, 0, -12, 20, 1, 0.5],
+        [-10, 0.4, 0, 0.4, 0.8, 18],
+        [10, 0.4, 0, 0.4, 0.8, 18],
+        [0, 0.4, -10, 18, 0.8, 0.4],
       ].map(([x, y, z, w, h, d], i) => (
-        <mesh
-          key={i}
-          position={[x, y + 0.5, z]}
-          castShadow
-          receiveShadow
-        >
+        <mesh key={`hedge-${i}`} position={[x, y, z]} castShadow>
           <boxGeometry args={[w, h, d]} />
           <meshStandardMaterial color="#1a2a18" roughness={0.9} />
         </mesh>
       ))}
 
-      {/* Fountain base in front */}
-      <group position={[0, 0, 15]}>
-        <mesh position={[0, 0.3, 0]} receiveShadow>
-          <cylinderGeometry args={[2, 2.5, 0.6, 24]} />
-          <meshStandardMaterial color="#3a3530" roughness={0.7} />
+      {/* Fountain */}
+      <group position={[0, 0, 14]}>
+        <mesh position={[0, 0.25, 0]} receiveShadow>
+          <cylinderGeometry args={[1.8, 2.2, 0.5, 20]} />
+          <meshStandardMaterial color="#3a3530" roughness={0.75} />
         </mesh>
-        {/* Water */}
-        <mesh position={[0, 0.5, 0]}>
-          <cylinderGeometry args={[1.8, 1.8, 0.2, 24]} />
-          <meshStandardMaterial
-            color="#1a2a3a"
-            roughness={0.1}
-            metalness={0.5}
+        <mesh position={[0, 0.45, 0]}>
+          <cylinderGeometry args={[1.5, 1.5, 0.15, 20]} />
+          <meshStandardMaterial 
+            color="#1a2a3a" 
+            roughness={0.2} 
+            metalness={0.4}
             transparent
-            opacity={0.8}
+            opacity={0.85}
           />
         </mesh>
-        {/* Center piece */}
-        <mesh position={[0, 1.2, 0]}>
-          <cylinderGeometry args={[0.3, 0.4, 1.5, 12]} />
-          <meshStandardMaterial color="#4a4540" roughness={0.6} />
+        <mesh position={[0, 1, 0]}>
+          <cylinderGeometry args={[0.25, 0.35, 1.2, 10]} />
+          <meshStandardMaterial color="#4a4540" roughness={0.7} />
         </mesh>
       </group>
     </group>
